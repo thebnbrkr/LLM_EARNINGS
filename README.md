@@ -19,10 +19,4 @@ Built with:
 - 💬 LLM-generated summaries grounded in retrieved context
 - 🧠 Uses RAG-style architecture (retrieval-augmented generation)
 
- following TOML (secure format):
 
-```toml
-QDRANT_URL = "your-qdrant-url"
-QDRANT_API_KEY = "your-qdrant-api-key"
-HF_TOKEN = "your-huggingface-api-token"
-DEEPINFRA_API_KEY = "your-deepinfra-api-key"
