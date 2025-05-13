@@ -31,7 +31,7 @@ User Question
 Final Answer + Quotes Shown to User
 ```
 
-1. 🔢 **Embedding the Query**  
+1.  **Embedding the Query**  
    The app uses BAAI/bge-small-en to transform your natural language query into a dense vector embedding. This captures semantic meaning, not just exact words.
 
    Example:
@@ -39,12 +39,12 @@ Final Answer + Quotes Shown to User
    "How did Apple perform in China?"  
    might semantically match "Tim Cook discussed weakening demand in Asia".
 
-2. 📦 **Semantic Retrieval with Qdrant**  
+2.  **Semantic Retrieval with Qdrant**  
    The app then queries Qdrant, a high-performance vector database, to retrieve the top-k transcript chunks most similar to your question. Qdrant performs cosine similarity search on pre-embedded chunks from earnings call transcripts.
    
    You can optionally filter by speaker (e.g., Tim Cook, Lisa Su), and set a minimum similarity threshold and result count.
 
-3. 🧩 **Compiling Context**  
+3.  **Compiling Context**  
    The top-matching transcript snippets are:
    
    - Grouped by speaker
@@ -58,7 +58,7 @@ Final Answer + Quotes Shown to User
    [Tim Cook]: In China, we saw a 12% revenue decline, partially offset by services growth.
    ```
 
-4. 📝 **LLM Summarization via DeepInfra**  
+4.  **LLM Summarization via DeepInfra**  
    The structured context + original question is passed to a hosted LLaMA model (meta-llama/Llama-4-Maverick-17B) via the DeepInfra OpenAI-compatible API.
    
    The prompt is designed to:
@@ -69,13 +69,13 @@ Final Answer + Quotes Shown to User
    
    The result: an interpretable, well-grounded summary.
 
-## 💡 Example Queries
+##  Example Queries
 
 - "What did Tim Cook say about AI?"
 - "How did Microsoft perform in the cloud segment?"
 - "Was inflation mentioned in Q4?"
 
-## 🛠️ Stack Overview
+## Stack Overview
 
 | Layer | Tool |
 |-------|------|
@@ -85,7 +85,7 @@ Final Answer + Quotes Shown to User
 | LLM (summarization) | DeepInfra hosting LLaMA 4 |
 | Vector Format | JSON chunks (title, speaker, text, timestamp) |
 
-## 🗃️ File Structure
+##  File Structure
 
 ```
 ├── app.py                      # Main Streamlit app logic
@@ -94,13 +94,13 @@ Final Answer + Quotes Shown to User
     └── secrets.toml            # API keys (kept private)
 ```
 
-## 🧪 Live Demo
+##  Live Demo
 
-👉 Try it here (Streamlit) : https://llm-earnings.streamlit.app/
+ Try it here (Streamlit) : https://llm-earnings.streamlit.app/
 
 
 
-## 🧠 Why This Matters
+##  Why This Matters
 
 Unlike traditional search, this app understands intent using embeddings and shows only the most relevant parts of the transcript — no more skimming through 30-page PDFs.
 
