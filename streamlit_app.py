@@ -1,17 +1,16 @@
-
 import streamlit as st
 from typing import List, Dict, Any, Optional
 from qdrant_client import QdrantClient, models
-from huggingface_hub import InferenceClient
+from sentence_transformers import SentenceTransformer
 from openai import OpenAI
 import pandas as pd
 
-
+# ✅ Secrets
 QDRANT_URL = st.secrets["QDRANT_URL"]
 QDRANT_API_KEY = st.secrets["QDRANT_API_KEY"]
-HF_TOKEN = st.secrets["HF_TOKEN"]
 DEEPINFRA_API_KEY = st.secrets["DEEPINFRA_API_KEY"]
 
+# ✅ Config
 COLLECTION_NAME = "earnings_call_chunks"
 EMBEDDING_MODEL = "BAAI/bge-small-en"
 DEEPINFRA_MODEL = "meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8"
@@ -19,7 +18,7 @@ DEEPINFRA_MODEL = "meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8"
 class EarningsCallAnalyzer:
     def __init__(self):
         self.qdrant_client = QdrantClient(url=QDRANT_URL, api_key=QDRANT_API_KEY)
-        self.hf_client = InferenceClient(api_key=HF_TOKEN)
+        self.embedder = SentenceTransformer(EMBEDDING_MODEL)
         self.llm_client = OpenAI(api_key=DEEPINFRA_API_KEY, base_url="https://api.deepinfra.com/v1/openai")
 
     def extract_speaker_from_query(self, query: str) -> Optional[str]:
@@ -37,7 +36,7 @@ class EarningsCallAnalyzer:
             filter_conditions.append(models.FieldCondition(key="speaker", match=models.MatchValue(value=speaker_filter)))
         query_filter = models.Filter(must=filter_conditions) if filter_conditions else None
 
-        query_vector = self.hf_client.feature_extraction(query, model=EMBEDDING_MODEL)
+        query_vector = self.embedder.encode(query).tolist()
 
         results = self.qdrant_client.search(
             collection_name=COLLECTION_NAME,
@@ -90,7 +89,6 @@ example_queries = [
     "How did Apple perform in China?",
     "What were the financial highlights?",
     "Did they discuss inflation?",
-    
 ]
 
 with st.sidebar:
@@ -123,3 +121,4 @@ if submit and query_input.strip():
         st.dataframe(df, use_container_width=True)
     else:
         st.warning("No statements found.")
+
